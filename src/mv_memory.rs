@@ -232,7 +232,7 @@ impl MvMemory {
     // For evaluating & validating explicit beneficiary reads.
     pub(crate) fn read_beneficiary(
         &self,
-    ) -> Option<Ref<MemoryLocation, BTreeMap<usize, MemoryEntry>, ahash::RandomState>> {
+    ) -> Option<Ref<MemoryLocation, BTreeMap<usize, MemoryEntry>>> {
         self.data.get(&self.beneficiary_location)
     }
 
