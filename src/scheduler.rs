@@ -166,12 +166,16 @@ impl Scheduler {
     pub(crate) fn add_dependency(&self, tx_idx: TxIdx, blocking_tx_idx: TxIdx) -> bool {
         // This is an important lock to prevent a race condition where the blocking
         // transaction completes re-execution before this dependency can be added.
-        let blocking_tx = index_mutex!(self.transactions_status, blocking_tx_idx);
-        if matches!(
-            blocking_tx.status,
-            IncarnationStatus::Executed | IncarnationStatus::Validated
-        ) {
-            return false;
+        {
+            let blocking_tx = index_mutex!(self.transactions_status, blocking_tx_idx);
+            if matches!(
+                blocking_tx.status,
+                IncarnationStatus::Executed | IncarnationStatus::Validated
+            ) {
+                // We drop the `blocking_tx` explicitly because it's not necessary anymore and the thread still has work to do.
+                drop(blocking_tx);
+                return false;
+            }
         }
 
         let mut tx = index_mutex!(self.transactions_status, tx_idx);

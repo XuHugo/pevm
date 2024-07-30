@@ -335,8 +335,9 @@ fn try_execute<S: Storage, C: PevmChain>(
 ) -> Option<Task> {
     loop {
         //early termination of execution
-        if abort_reason.get().is_none() {
-            continue;
+        if abort_reason.get().is_some() {
+            //scheduler.abort();
+            None
         }
         return match vm.execute(tx_version.tx_idx) {
             VmExecutionResult::Retry => {

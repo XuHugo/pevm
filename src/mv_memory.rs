@@ -111,13 +111,20 @@ impl MvMemory {
 
         // Update this transaction's read & write set for the next validation.
         last_locations.read = read_set;
-        for new_location in new_locations.iter() {
-            if !last_locations.write.contains(new_location) {
-                // We update right before returning to avoid an early clone.
-                last_locations.write = new_locations;
-                return true;
+        // compare len to quickly determine differences
+        if new_locations.len() > last_locations.write.len() {
+            last_locations.write = new_locations;
+            return true;
+        } else {
+            for new_location in new_locations.iter() {
+                if !last_locations.write.contains(new_location) {
+                    // We update right before returning to avoid an early clone.
+                    last_locations.write = new_locations;
+                    return true;
+                }
             }
         }
+
         // We update right before returning to avoid an early clone.
         last_locations.write = new_locations;
         false
