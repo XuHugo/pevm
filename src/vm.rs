@@ -273,7 +273,7 @@ impl<'a, S: Storage, C: PevmChain> Database for VmDb<'a, S, C> {
                             }
                         }
                         Some((closest_idx, MemoryEntry::Data(tx_incarnation, value))) => {
-                            // geno error:we cant keep the balance
+                            // geno error:we can't guarantee the cuttent_idx-2 and previous txs has been finished;
                             if need_consecutive_idxs && closest_idx != &(current_idx - 1) {
                                 return reschedule;
                             }
