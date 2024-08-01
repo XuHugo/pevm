@@ -273,6 +273,7 @@ impl<'a, S: Storage, C: PevmChain> Database for VmDb<'a, S, C> {
                             }
                         }
                         Some((closest_idx, MemoryEntry::Data(tx_incarnation, value))) => {
+                            // geno error:we cant keep the balance
                             if need_consecutive_idxs && closest_idx != &(current_idx - 1) {
                                 return reschedule;
                             }
@@ -452,6 +453,7 @@ impl<'a, S: Storage, C: PevmChain> Database for VmDb<'a, S, C> {
                                 tx_idx: *closest_idx,
                                 tx_incarnation: *tx_incarnation,
                             });
+                            // why not use a single value
                             if let Some(prev_origin) = prev_origin {
                                 if prev_origin != &origin {
                                     return Err(ReadError::InconsistentRead);
